@@ -5,6 +5,8 @@ import Order from '../models/orderModel.js'
 // route POST /api/orders
 // access Private
 const addOrderItems = asyncHandler(async (req, res) => {
+    // console.log('addorderitem called')
+    // res.send('ordered')
   const {
     orderItems,
     shippingAddress,
@@ -16,24 +18,41 @@ const addOrderItems = asyncHandler(async (req, res) => {
   } = req.body
   if(orderItems&& orderItems.length===0){
     res.status(400)
-    throw new Error('No order items!')
+    throw new Error('Your cart is empty!')
     return
   }
   else{
+    // console.log(req.user.id)
     const order=new Order({
-        orderItems,
-    shippingAddress,
-    paymentMethod,
-    itemsPrice,
-    taxPrice,
-    shippingPrice,
-    totalPrice,
+      user: req.user._id,
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      itemsPrice,
+      taxPrice,
+      shippingPrice,
+      totalPrice,
     })
     const createdOrder=await order.save()
     res.status(201)
     res.json(createdOrder)
   }
 })
+// des Get Order by id
+// route GET /api/orders/:id
+// access Private
+const getOrderById = asyncHandler(async (req, res) => {
+ const order=await Order.findById(req.params.id).populate('user','name email')
+
+ if(order){
+  res.json(order)
+ }
+ else{
+  res.status(404)
+  throw new Error('Order not found')
+ }
+})
 export{
-    addOrderItems
+    addOrderItems,
+    getOrderById
 }
