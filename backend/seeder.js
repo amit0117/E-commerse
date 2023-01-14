@@ -19,7 +19,7 @@ const importData= async ()=>{
         const createdUser=await User.insertMany(users)
         const adminUser=createdUser[0]._id
         const sampleProducts=products.map(product=>{
-            console.log(product.countInStock);
+            // console.log(product.countInStock);
             return {...product,user:adminUser}
         })
         await Product.insertMany(sampleProducts)
@@ -46,5 +46,4 @@ if(process.argv[2]==='-d'){
     destroyData()
 }
 else importData()
-// type node backend/seeder for importing data
-// type node backend/seeder -d for destroying data
+

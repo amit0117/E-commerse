@@ -16,13 +16,14 @@ const addOrderItems = asyncHandler(async (req, res) => {
     shippingPrice,
     totalPrice,
   } = req.body
+  console.log(req.user._id)
   if(orderItems&& orderItems.length===0){
     res.status(400)
     throw new Error('Your cart is empty!')
     return
   }
   else{
-    // console.log(req.user.id)
+    // console.log(`called in orderController ${req.user._id}`)
     const order=new Order({
       user: req.user._id,
       orderItems,
