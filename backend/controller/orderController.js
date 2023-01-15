@@ -5,8 +5,7 @@ import Order from '../models/orderModel.js'
 // route POST /api/orders
 // access Private
 const addOrderItems = asyncHandler(async (req, res) => {
-    // console.log('addorderitem called')
-    // res.send('ordered')
+   
   const {
     orderItems,
     shippingAddress,
@@ -16,14 +15,14 @@ const addOrderItems = asyncHandler(async (req, res) => {
     shippingPrice,
     totalPrice,
   } = req.body
-  console.log(req.user._id)
+  console.log(`called in orderController, user id is  ${req.user._id} and saved in order`)
+  // console.log(req.user._id)
   if(orderItems&& orderItems.length===0){
     res.status(400)
     throw new Error('Your cart is empty!')
     return
   }
   else{
-    // console.log(`called in orderController ${req.user._id}`)
     const order=new Order({
       user: req.user._id,
       orderItems,
@@ -53,7 +52,32 @@ const getOrderById = asyncHandler(async (req, res) => {
   throw new Error('Order not found')
  }
 })
+
+// des Update order to paid
+// route GET /api/orders/:id/pay
+// access Private
+const updateOrderToPaid= asyncHandler(async (req, res) => {
+ const order=await Order.findById(req.params.id)
+
+ if(order){
+  order.isPaid=true,
+  order.paidAt=Date.now(),
+  order.paymentResult={
+    id:req.body.id,
+    status:req.body.status,
+    email_address:req.body.payer.email_address
+  }
+  const updatedOrder=await order.save();
+  res.json(updatedOrder)
+  
+ }
+ else{
+  res.status(404)
+  throw new Error('Order not found')
+ }
+})
 export{
     addOrderItems,
-    getOrderById
+    getOrderById,
+    updateOrderToPaid,
 }

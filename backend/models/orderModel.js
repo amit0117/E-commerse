@@ -71,9 +71,6 @@ const orderSchema=mongoose.Schema({
 },{
     timestamps:true
 })
-orderSchema.pre('save',next=>{
-    console.log('called in order model before saving to the database')
-    next()
-})
+
 const Order=mongoose.model('Order',orderSchema)
 export default Order
