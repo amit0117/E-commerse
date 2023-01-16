@@ -15,7 +15,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     shippingPrice,
     totalPrice,
   } = req.body
-  console.log(`called in orderController, user id is  ${req.user._id} and saved in order`)
+  // console.log(`called in orderController, user id is  ${req.user._id} and saved in order`)
   // console.log(req.user._id)
   if(orderItems&& orderItems.length===0){
     res.status(400)
@@ -76,8 +76,17 @@ const updateOrderToPaid= asyncHandler(async (req, res) => {
   throw new Error('Order not found')
  }
 })
+// des GET order in user Order
+// route GET /api/orders/myorders
+// access Private
+const getMyOrders= asyncHandler(async (req, res) => {
+ const orders=await Order.find({user:req.user._id})
+ res.json(orders)
+ 
+})
 export{
     addOrderItems,
     getOrderById,
     updateOrderToPaid,
+    getMyOrders
 }
