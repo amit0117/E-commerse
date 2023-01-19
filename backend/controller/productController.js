@@ -3,8 +3,22 @@ import Product from '../models/productModel.js'
 
 const getProduct = asyncHandler(async (req, res) => {
   // console.log('products called')
-  const products = await Product.find({})
-  res.json(products)
+  const pageSize=5;
+  const page=Number(req.query.pageNumber)||1
+  const keyword=req.query.keyword?{
+    name:{
+      $regex:req.query.keyword,
+      $options:'i'
+    }
+  }:{}
+  // console.log('called in product controller')
+  // console.log(keyword)
+  const count=await Product.countDocuments({...keyword})
+  const products = await Product.find({...keyword})
+  .limit(pageSize)
+  .skip(pageSize*(page-1))
+
+  res.json({products,page,pages:Math.ceil(count/pageSize)})
 })
 
 // des Delete a product
@@ -115,6 +129,13 @@ const createProductReview = asyncHandler(async (req, res) => {
   const updatedProduct = await product.save()
   res.status(201).json(updatedProduct)
 })
+// des Get top rated product
+// route GET /api/products/top
+// access Public
+const getTopProducts = asyncHandler(async (req, res) => {
+ const products=await Product.find({}).sort({rating:-1}).limit(4)
+ res.json(products)
+})
 
 export {
   getProduct,
@@ -122,5 +143,6 @@ export {
   deleteProduct,
   createProduct,
   updateProduct,
-  createProductReview
+  createProductReview,
+  getTopProducts
 }
