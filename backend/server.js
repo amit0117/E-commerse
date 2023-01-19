@@ -7,8 +7,14 @@ import userRoutes from './routes/userRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import { notFound,errorHandler } from './middleware/errorMiddleware.js'
 import uploadRoutes from './routes/uploadRoutes.js'
+import pkg from 'cloudinary'
+const cloudinary=pkg
 dotenv.config();
-
+cloudinary.config({
+    cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
+    api_key:process.env.CLOUDINARY_KEY,
+    api_secret:process.env.CLOUDINARY_SECRET
+})
 connectDB()
 const app = express()
 app.use(express.json())

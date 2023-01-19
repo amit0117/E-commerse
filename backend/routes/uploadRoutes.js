@@ -1,6 +1,9 @@
 import express from "express";
 import multer from 'multer'
 import path from 'path'
+import pkg from 'cloudinary'
+const cloudinary=pkg
+import asyncHandler from 'express-async-handler'
 const router=express.Router()
 
 const storage=multer.diskStorage({
@@ -27,12 +30,18 @@ function checkFileTypes(file,cb){
 const upload=multer({
     storage,
     fileFilter:function(req,file,cb){
-        checkFile(file,cb)
+        checkFileTypes(file,cb)
     }
 })
 
-router.post('/',upload.single('image'),(req,res)=>{
-    res.send(`/${req.file.path}`)
-})
+// router.post('/',upload.single('image'),(req,res)=>{
+//     // res.send(`/${req.file.path}`)
+// })
+router.post('/',upload.single('image'),asyncHandler(async(req,res)=>{
+    const uploadPhoto=await cloudinary.uploader.upload(`${req.file.path}`)
+    // console.log(`called in uploadRoute`)
+    // console.log(uploadPhoto)
+    res.send(uploadPhoto.url)
+}))
 
 export default router
