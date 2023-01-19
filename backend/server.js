@@ -8,6 +8,8 @@ import orderRoutes from './routes/orderRoutes.js'
 import { notFound,errorHandler } from './middleware/errorMiddleware.js'
 import uploadRoutes from './routes/uploadRoutes.js'
 import pkg from 'cloudinary'
+import multer from 'multer'
+import morgan from 'morgan'
 const cloudinary=pkg
 dotenv.config();
 cloudinary.config({
@@ -17,6 +19,9 @@ cloudinary.config({
 })
 connectDB()
 const app = express()
+if(process.env.NODE_ENV=='development'){
+    app.use(morgan('dev'))
+}
 app.use(express.json())
 app.get('/',(req,res)=>{
     res.send("IT WORKS  ..")
