@@ -8,7 +8,7 @@ import orderRoutes from './routes/orderRoutes.js'
 import { notFound,errorHandler } from './middleware/errorMiddleware.js'
 import uploadRoutes from './routes/uploadRoutes.js'
 import pkg from 'cloudinary'
-import multer from 'multer'
+// import multer from 'multer'
 import morgan from 'morgan'
 const cloudinary=pkg
 dotenv.config();
@@ -39,9 +39,9 @@ const __dirname=path.resolve()
 app.use('/uploads',express.static(path.join(__dirname,'/uploads')))
 
 if(process.env.NODE_ENV==='production'){
-    app.use(express.static(path.join(__dirname,'/frontend/build')))
+    app.use(express.static(path.join(__dirname,'./frontend/build')))
 
-    app.get('*',(req,res)=>res.sendFile(path.resolve(__dirname,'frontend','build','index.html')))
+    app.get('*',(req,res)=>res.join((__dirname,'./frontend/build/index.html')))
 }else{
     app.get('/',(req,res)=>{
         res.send("CheapShop is running ..")
